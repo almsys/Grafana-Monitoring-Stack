@@ -8,7 +8,7 @@ How to install:
 
    sudo ./init-grafana/init_grafana.sh
 
-3. Then open Grafana in your browser with login admin and password - MyPassword1:
+3. Then open Grafana in your browser with login "admin" and password - "MyPassword1":
 
    YourMachineIPadrress:3000/
 
