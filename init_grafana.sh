@@ -157,5 +157,5 @@ PROMETHEUS_CONTAINER=$(docker ps -q -f "name=monitoring_prometheus")
 docker kill -s SIGHUP $PROMETHEUS_CONTAINER
 
 echo "Установка завершена! Доступ к Grafana: http://$CURRENT_IP:3000/login"
-echo "Логин: admin, Пароль: admin"
+echo "Логин: admin, Пароль: MyPassword1"
 echo "Не забудьте изменить пароль при первом входе."
