@@ -99,7 +99,7 @@ echo "Стек 'monitoring' успешно развернут."
 export GRAFANA_URL="http://$CURRENT_IP:3000"
 export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
-export GRAFANA_NEW_PASSWORD="Empvmr28"
+export GRAFANA_NEW_PASSWORD="MyPassword1"
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
 sleep 2
