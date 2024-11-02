@@ -10,6 +10,6 @@ How to install:
 
 3. Then open Grafana in your browser with login admin and password - MyPassword1:
 
-   <yourIP>:3000/
+   YourMachineIPadrress:3000/
 
 
