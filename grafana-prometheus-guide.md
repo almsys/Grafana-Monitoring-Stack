@@ -1,6 +1,7 @@
 # Настройка мониторинга за 15 минут с помощью Grafana и Prometheus
 
 После настройки получим dashboard с визуализацией метрик системы.
+<img width="1039" height="470" alt="image" src="https://github.com/user-attachments/assets/bf2a54d4-9bff-4324-92e6-3a518c0d9f9d" />
 
 ## Клонирование репозитория
 
