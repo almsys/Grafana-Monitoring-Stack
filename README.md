@@ -3,7 +3,7 @@
 
 Bash-скрипт для автоматического развертывания стека мониторинга на базе Grafana, Prometheus и Node Exporter с использованием Docker Swarm.
 
-Итоговое окно которое получим после завершения работы скрипта:
+Итоговое окно после работы скрипта:
 <img width="1919" height="1004" alt="image" src="https://github.com/user-attachments/assets/f3755f35-63f0-4808-a70d-b8ecb19a2fc0" />
 
 ## Описание
