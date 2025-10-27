@@ -91,7 +91,7 @@ else
 fi
 
 echo "Стек 'monitoring' успешно развернут."
-
+sleep 20
 #Change password for Grafana
 # Замените <current_ip> на IP-адрес вашей машины
 export GRAFANA_URL="http://$CURRENT_IP:3000"
