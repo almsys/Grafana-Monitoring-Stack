@@ -94,7 +94,7 @@ export GRAFANA_URL_HEALTH="http://$CURRENT_IP:3000/api/health"
 
 #Проверка доступности порта Grafana
 while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
-    echo "Grafana пока не доступна"
+    echo "Ждем пока запустится Grafana, она все еще не доуступна"
 done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
