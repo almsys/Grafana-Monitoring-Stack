@@ -5,7 +5,8 @@ Bash-скрипт для автоматического развертывани
 
 Итоговое окно после работы скрипта:
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/5e322922-315a-467c-9d6a-672d83808cbf" />
+<img width="1919" height="1042" alt="image" src="https://github.com/user-attachments/assets/4c7643e0-205f-4756-8895-96b5590ea06e" />
+
 
 
 Примечание: Если вы хотите в ручную установить стек мониторинга, используйте инструкцию  grafana-prometheus-guide.md
