@@ -11,14 +11,6 @@ else
     echo "Директория grafana-docker-stack не найдена."
 fi
 
-if [ -d "grafana-docker-stack" ]; then
-    echo "Удаление директории grafana-docker-stack..."
-    rm -rf grafana-docker-stack
-    echo "Директория удалена."
-else
-    echo "Директория grafana-docker-stack не найдена."
-fi
-
 # Установка Docker
 if ! command -v docker &> /dev/null; then
     echo "Docker не установлен. Устанавливаем..."
@@ -100,11 +92,12 @@ export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
 
 while `timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3000"`; do
-        sleep 10
+        sleep 5
 done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
 sleep 2
+ping -c 5 $CURRENT_IP
 curl -X POST "$GRAFANA_URL/login" \
      -H "Content-Type: application/json" \
      -d "{\"user\":\"$GRAFANA_USER\", \"password\":\"$GRAFANA_OLD_PASSWORD\"}" \
