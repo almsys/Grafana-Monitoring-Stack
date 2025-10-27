@@ -140,9 +140,6 @@ docker service logs monitoring_grafana
 Скрипт использует официальный репозиторий:
 - https://git.digitalstudium.com/digitalstudium/grafana-docker-stack.git
 
-## Лицензия
-
-MIT
 
 ## Автор
 
