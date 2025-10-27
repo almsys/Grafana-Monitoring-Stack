@@ -50,8 +50,6 @@ for volume in "${VOLUMES[@]}"; do
     fi
 done
 
-#!/bin/bash
-
 # Проверка наличия git
 if ! command -v git &> /dev/null; then
     echo "git не установлен. Устанавливаем..."
