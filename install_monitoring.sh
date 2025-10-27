@@ -19,6 +19,22 @@ else
     echo "Директория grafana-docker-stack не найдена."
 fi
 
+# Установка Docker
+if ! command -v docker &> /dev/null; then
+    echo "Docker не установлен. Устанавливаем..."
+    sudo apt update && sudo apt install -y docker.io
+else
+    echo "Docker уже установлен."
+fi
+
+# Инициализация Docker Swarm
+if ! docker info | grep -q "Swarm: active"; then
+    echo "Инициализация Docker Swarm..."
+    docker swarm init || { echo "Ошибка при инициализации Docker Swarm."; exit 1; }
+else
+    echo "Docker Swarm уже инициализирован."
+fi
+
 # Название стека и список томов
 STACK_NAME="monitoring"
 VOLUMES=("monitoring_grafana-configs" "monitoring_grafana-data" "monitoring_prom-configs" "monitoring_prom-data")
@@ -65,22 +81,6 @@ else
     echo "Репозиторий уже клонирован."
 fi
 
-# Установка Docker
-if ! command -v docker &> /dev/null; then
-    echo "Docker не установлен. Устанавливаем..."
-    sudo apt update && sudo apt install -y docker.io
-else
-    echo "Docker уже установлен."
-fi
-
-# Инициализация Docker Swarm
-if ! docker info | grep -q "Swarm: active"; then
-    echo "Инициализация Docker Swarm..."
-    docker swarm init || { echo "Ошибка при инициализации Docker Swarm."; exit 1; }
-else
-    echo "Docker Swarm уже инициализирован."
-fi
-
 # Развертывание стека
 if [ -f "grafana-docker-stack/docker-compose.yml" ]; then
     echo "Разворачиваем стек 'monitoring'..."
@@ -98,6 +98,10 @@ export GRAFANA_URL="http://$CURRENT_IP:3000"
 export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
+
+while `timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3000"`; do
+        sleep 10
+done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
 sleep 2
