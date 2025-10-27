@@ -50,7 +50,7 @@ Bash-скрипт для автоматического развертывани
 
 ```bash
 # Скачайте скрипт
-wget https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install_monitoring.sh
+wget https://raw.githubusercontent.com/almsys/grafana-monitoring-stack/main/install_monitoring.sh
 
 # Сделайте его исполняемым
 chmod +x install_monitoring.sh
