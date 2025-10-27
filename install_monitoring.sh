@@ -86,6 +86,7 @@ echo "Стек 'monitoring' успешно развернут. Ждем пока
 sleep 20
 #Проверка доступности порта Grafana
 while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
+    sleep 1
 done
 #Change password for Grafana
 # Замените <current_ip> на IP-адрес вашей машины
