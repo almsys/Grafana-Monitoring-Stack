@@ -47,7 +47,7 @@ else
 fi
 
 # Проверка и удаление томов
-sleep 10
+sleep 5
 for volume in "${VOLUMES[@]}"; do
     if docker volume ls | grep -q "$volume"; then
         echo "Том '$volume' найден. Удаляем..."
