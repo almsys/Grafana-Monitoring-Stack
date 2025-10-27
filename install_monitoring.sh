@@ -35,7 +35,6 @@ VOLUMES=("monitoring_grafana-configs" "monitoring_grafana-data" "monitoring_prom
 if docker stack ls | grep -q "$STACK_NAME"; then
     echo "Стек '$STACK_NAME' найден. Удаляем..."
     docker stack rm "$STACK_NAME"
-
     # Ждем, пока стек удалится
     echo "Ожидание удаления стека '$STACK_NAME'..."
     while docker stack ls | grep -q "$STACK_NAME"; do
@@ -84,8 +83,8 @@ fi
 
 echo "Стек 'monitoring' успешно развернут. Ждем пока запустится Grafana"
 sleep 20
+
 #Change password for Grafana
-# Замените <current_ip> на IP-адрес вашей машины
 export GRAFANA_URL="http://$CURRENT_IP:3000"
 export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
@@ -133,14 +132,67 @@ curl https://grafana.com/api/dashboards/1860 | jq '.json' > dashboard-1860.json
     | jq \
     > dashboard-1860-modified.json
 
-curl -X POST "$GRAFANA_URL/api/dashboards/db" \
-     -H "Content-Type: application/json" \
-     -u "$GRAFANA_USER:$GRAFANA_NEW_PASSWORD" \
-     -d @dashboard-1860-modified.json
+# Выполняем импорт и сохраняем ответ
+DASHBOARD_IMPORT_RESPONSE=$(curl -s -X POST "$GRAFANA_URL/api/dashboards/db" \
+    -H "Content-Type: application/json" \
+    -u "$GRAFANA_USER:$GRAFANA_NEW_PASSWORD" \
+    -d @dashboard-1860-modified.json)
+
+echo "Ответ импорта: $DASHBOARD_IMPORT_RESPONSE"
+
+# Извлекаем UID и ID из JSON-ответа
+DASHBOARD_UID=$(echo $DASHBOARD_IMPORT_RESPONSE | jq -r '.uid')
+DASHBOARD_ID=$(echo $DASHBOARD_IMPORT_RESPONSE | jq -r '.id')
+
+if [ -z "$DASHBOARD_UID" ] || [ "$DASHBOARD_UID" = "null" ]; then
+    echo "Ошибка: Не удалось получить UID дашборда после импорта."
+else
+    echo "Дашборд успешно импортирован. UID: $DASHBOARD_UID, ID: $DASHBOARD_ID"
+    
+    # Шаг 5. Добавление дашборда в избранное (Star)
+    echo # 5. Добавление дашборда в избранное (Star)
+    sleep 2
+    echo "Добавляем дашборд $DASHBOARD_UID (ID: $DASHBOARD_ID) в избранное..."
+    
+    STAR_RESPONSE=$(curl -s -X POST "$GRAFANA_URL/api/user/stars/dashboard/$DASHBOARD_ID" \
+        -u "$GRAFANA_USER:$GRAFANA_NEW_PASSWORD")
+    
+    echo "Ответ от API (Star): $STAR_RESPONSE"
+    
+    # Шаг 6. Установка дашборда как Home Dashboard
+    echo # 6. Установка дашборда как Home Dashboard
+    sleep 2
+    echo "Устанавливаем дашборд ID=$DASHBOARD_ID как Home Dashboard..."
+    
+    # ВАЖНО: Используем homeDashboardId (числовой ID), а не UID!
+    HOME_DASHBOARD_RESPONSE=$(curl -s -X PUT "$GRAFANA_URL/api/user/preferences" \
+        -H "Content-Type: application/json" \
+        -u "$GRAFANA_USER:$GRAFANA_NEW_PASSWORD" \
+        -d "{\"homeDashboardId\":$DASHBOARD_ID,\"theme\":\"\",\"timezone\":\"\"}")
+    
+    echo "Ответ от API (Home Dashboard): $HOME_DASHBOARD_RESPONSE"
+    
+    # Проверяем что preferences обновились
+    sleep 2
+    UPDATED_PREFS=$(curl -s -X GET "$GRAFANA_URL/api/user/preferences" \
+        -u "$GRAFANA_USER:$GRAFANA_NEW_PASSWORD")
+    
+    echo "Обновленные preferences: $UPDATED_PREFS"
+    
+    # Дополнительно устанавливаем через org preferences
+    ORG_PREFS_RESPONSE=$(curl -s -X PUT "$GRAFANA_URL/api/org/preferences" \
+        -H "Content-Type: application/json" \
+        -u "$GRAFANA_USER:$GRAFANA_NEW_PASSWORD" \
+        -d "{\"homeDashboardId\":$DASHBOARD_ID,\"theme\":\"\",\"timezone\":\"\"}")
+    
+    echo "Ответ от API (Org Preferences): $ORG_PREFS_RESPONSE"
+    echo "Дашборд установлен как Home Dashboard."
+fi
 
 echo # Добавление Node Exporter в конфигурацию Prometheus
 echo "Добавление Node Exporter в конфигурацию Prometheus..."
 PROMETHEUS_CONFIG="/var/lib/docker/volumes/monitoring_prom-configs/_data/prometheus.yml"
+
 echo "
   - job_name: \"node-exporter\"
     static_configs:
@@ -152,6 +204,16 @@ echo "Перезагрузка конфигурации Prometheus..."
 PROMETHEUS_CONTAINER=$(docker ps -q -f "name=monitoring_prometheus")
 docker kill -s SIGHUP $PROMETHEUS_CONTAINER
 
-echo "Установка завершена! Доступ к Grafana: http://$CURRENT_IP:3000/login"
-echo "Логин: admin, Пароль: MyPassword1"
-echo "Не забудьте изменить пароль при первом входе."
+echo ""
+echo "=========================================="
+echo "Установка завершена!"
+echo "=========================================="
+echo "Доступ к Grafana: http://$CURRENT_IP:3000"
+echo "Логин: admin"
+echo "Пароль: MyPassword1"
+echo ""
+echo "Home Dashboard: Node Exporter Full"
+echo "URL: http://$CURRENT_IP:3000/d/$DASHBOARD_UID"
+echo ""
+echo "После входа вы автоматически попадете на этот дашборд"
+echo "=========================================="
