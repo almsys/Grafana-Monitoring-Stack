@@ -47,7 +47,7 @@ else
 fi
 
 # Проверка и удаление томов
-sleep 5
+sleep 10
 for volume in "${VOLUMES[@]}"; do
     if docker volume ls | grep -q "$volume"; then
         echo "Том '$volume' найден. Удаляем..."
@@ -82,12 +82,8 @@ else
     exit 1
 fi
 
-echo "Стек 'monitoring' успешно развернут. Ждем пока запустится Grafana..."
+echo "Стек 'monitoring' успешно развернут. Ждем пока запустится Grafana"
 sleep 20
-#Проверка доступности порта Grafana
-while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
-    sleep 1
-done
 #Change password for Grafana
 # Замените <current_ip> на IP-адрес вашей машины
 export GRAFANA_URL="http://$CURRENT_IP:3000"
@@ -95,6 +91,11 @@ export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
 export GRAFANA_URL_HEALTH="http://$CURRENT_IP:3000/api/health"
+
+#Проверка доступности порта Grafana
+while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
+    ping -c 5 $CURRENT_IP
+done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
 sleep 2
