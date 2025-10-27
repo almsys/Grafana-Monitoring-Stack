@@ -82,8 +82,11 @@ else
     exit 1
 fi
 
-echo "Стек 'monitoring' успешно развернут."
+echo "Стек 'monitoring' успешно развернут. Ждем пока запустится Grafana..."
 sleep 20
+#Проверка доступности порта Grafana
+while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
+done
 #Change password for Grafana
 # Замените <current_ip> на IP-адрес вашей машины
 export GRAFANA_URL="http://$CURRENT_IP:3000"
@@ -91,11 +94,6 @@ export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
 export GRAFANA_URL_HEALTH="http://$CURRENT_IP:3000/api/health"
-
-#Проверка доступности порта Grafana
-while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
-    echo "Ждем пока запустится Grafana, она все еще не доуступна"
-done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
 sleep 2
