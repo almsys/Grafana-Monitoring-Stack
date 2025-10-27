@@ -90,14 +90,15 @@ export GRAFANA_URL="http://$CURRENT_IP:3000"
 export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
+export GRAFANA_URL_HEALTH="http://$CURRENT_IP:3000/api/health"
 
-while `timeout 1 bash -c "cat > /dev/null > /dev/tcp/localhost/3000"`; do
-        sleep 15
+#Проверка доступности порта Grafana
+while ! curl -s -f --max-time 2 $GRAFANA_URL_HEALTH -o /dev/null; do
+    echo "Grafana пока не доступна"
 done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
 sleep 2
-ping -c 5 $CURRENT_IP
 curl -X POST "$GRAFANA_URL/login" \
      -H "Content-Type: application/json" \
      -d "{\"user\":\"$GRAFANA_USER\", \"password\":\"$GRAFANA_OLD_PASSWORD\"}" \
