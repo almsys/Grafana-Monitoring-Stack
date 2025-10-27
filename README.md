@@ -8,7 +8,7 @@ Bash-скрипт для автоматического развертывани
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/5e322922-315a-467c-9d6a-672d83808cbf" />
 
 
-Если вы хотите в ручную установить стек мониторинга, используйте инструкцию  grafana-prometheus-guide.md
+Примечание: Если вы хотите в ручную установить стек мониторинга, используйте инструкцию  grafana-prometheus-guide.md
 
 ## Описание
 
