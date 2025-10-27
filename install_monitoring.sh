@@ -91,7 +91,7 @@ export GRAFANA_USER="admin"
 export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
 
-while `timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3000"`; do
+while `timeout 1 bash -c "cat > /dev/null > /dev/tcp/localhost/3000"`; do
         sleep 15
 done
 
