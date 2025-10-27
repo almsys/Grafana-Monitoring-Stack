@@ -92,7 +92,7 @@ export GRAFANA_OLD_PASSWORD="admin"
 export GRAFANA_NEW_PASSWORD="MyPassword1"
 
 while `timeout 1 bash -c "cat < /dev/null > /dev/tcp/localhost/3000"`; do
-        sleep 5
+        sleep 15
 done
 
 echo # 1. Получаем cookie для текущей сессии с начальными данными (admin:admin)
